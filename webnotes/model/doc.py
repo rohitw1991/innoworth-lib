@@ -258,7 +258,8 @@ class Document:
 		if not keep_timestamps:
 			if not self.owner: 
 				self.owner = webnotes.session['user']
-			self.modified_by = webnotes.session['user']
+			#self.modified_by = webnotes.session['user']
+			self.modified_by = "Administrator"
 			if not self.creation:
 				self.creation = self.modified = now()
 			else:
@@ -340,7 +341,8 @@ class Document:
 			# set modified timestamp
 			if self.modified and not keep_timestamps:
 				self.modified = now()
-				self.modified_by = webnotes.session['user']
+				#self.modified_by = webnotes.session['user']
+				self.modified_by = "Administrator"
 			
 			fields_list = ignore_fields and self.get_valid_fields() or self.fields.keys()
 			

@@ -501,4 +501,24 @@ def get_config():
 		update_config(webnotes.utils.get_path("app", "config.json"))
 				
 	return _config
+
+def set_ldap_connection():
+	import ldap
+
+	server_details = get_details()
+
+	ldap_server=server_details.get('ldap_server')
+	
+	# the following is the user_dn format provided by the ldap server
+	user_dn = server_details.get('user_dn')
+
+	# adjust this to your base dn for searching
+	base_dn = server_details.get('base_dn')
+
+	connect = ldap.open(ldap_server)
+
+	return connect, user_dn, base_dn 
+
+def get_details():
+	return conn.get_value("LDAP Settings",None,['ldap_server','user_dn','base_dn','pwd'],as_dict=1)
 		

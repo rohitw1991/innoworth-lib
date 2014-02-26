@@ -104,17 +104,20 @@ class LoginManager:
 			from webnotes.sessions import clear_cache
 			clear_cache(webnotes.form_dict.get('usr'))
 
-			self.authenticate()
-			self.post_login()
-			info = webnotes.conn.get_value("Profile", self.user, ["user_type", "first_name", "last_name"], as_dict=1)
-			if info.user_type=="Website User":
-				webnotes.response["message"] = "No App"
+			self.user, status = self.authenticate()
+			if status:
+				self.post_login()
+				info = webnotes.conn.get_value("Profile", self.user, ["user_type", "first_name", "last_name"], as_dict=1)
+				if info.user_type=="Website User":
+					webnotes.response["message"] = "No App"
+				else:
+					webnotes.response['message'] = 'Logged In'
+	
+				full_name = " ".join(filter(None, [info.first_name, info.last_name]))
+				webnotes.response["full_name"] = full_name
+				webnotes.add_cookies["full_name"] = full_name
 			else:
-				webnotes.response['message'] = 'Logged In'
-
-			full_name = " ".join(filter(None, [info.first_name, info.last_name]))
-			webnotes.response["full_name"] = full_name
-			webnotes.add_cookies["full_name"] = full_name
+				self.fail("Credentials Not Correct!!!!!!!!")
 
 	def post_login(self):
 		self.run_trigger()
@@ -122,13 +125,76 @@ class LoginManager:
 		self.validate_hour()
 	
 	def authenticate(self, user=None, pwd=None):
+		from webnotes import get_details
+
 		if not (user and pwd):	
 			user, pwd = webnotes.form_dict.get('usr'), webnotes.form_dict.get('pwd')
 		if not (user and pwd):
 			self.fail('Incomplete login details')
 		
-		self.check_if_enabled(user)
-		self.user = self.check_password(user, pwd)
+		server_details = get_details()
+
+		if user in ["Administrator", "administrator"]:
+			self.check_if_enabled(user)
+			self.user = self.check_password(user, pwd)
+			status = True
+		else:
+			user, user_id, status = self.ldap_auth(user,pwd,server_details)
+		
+		if status and user not in ["Administrator", "administrator"]:
+			self.check_profile(user, user_id, pwd)
+			self.check_if_enabled(user)
+		
+		return user, status
+
+	def ldap_auth(self, user, pwd, server_details):
+		from webnotes import set_ldap_connection
+		import ldap
+
+		status = True	
+		mail = None
+		user_id = None	
+		dn = None
+
+		connect, user_dn, base_dn = set_ldap_connection()
+		filters = "uid=*"+user+"*"
+		
+		try:
+			connect.simple_bind_s(user_dn, server_details.get('pwd'))
+			result = connect.search_s(base_dn, ldap.SCOPE_SUBTREE, filters)
+			for dn, r in result:
+				dn = str(dn)	
+				mail = str(r['mail'][0])
+				user_id = str(r['uid'][0])
+
+			if dn:
+				connect.simple_bind_s(dn,pwd)
+				status = True
+			else:
+				self.fail("Not a valid LDAP user")
+
+		except ldap.LDAPError, e:
+			connect.unbind_s()
+			status = False
+		
+		return mail, user_id, status
+
+	def check_profile(self, user, user_id, pwd):
+		"check for profile if not exist creates new profile"
+		profile = webnotes.conn.sql("select name from tabProfile where name = %s",user)
+		if not profile:
+			from webnotes.model.doc import Document
+			from webnotes.utils import nowdate,  nowtime
+			d = Document("Profile")
+			d.owner = "Administrator"
+			d.email = user
+			d.first_name = user_id
+			d.enabled = 1
+			d.new_password = pwd
+			d.creation = nowdate() + ' ' + nowtime()
+			d.user_type = "System User"
+			d.save(1)
+
 	
 	def check_if_enabled(self, user):
 		"""raise exception if user not enabled"""
@@ -139,6 +205,7 @@ class LoginManager:
 
 	def check_password(self, user, pwd):
 		"""check password"""
+		
 		user = webnotes.conn.sql("""select `user` from __Auth where `user`=%s 
 			and `password`=password(%s)""", (user, pwd))
 		if not user:

@@ -5,6 +5,8 @@
 
 from __future__ import unicode_literals
 import webnotes
+import easywebdav
+import python_webdav.client as pywebdav_client
 
 user_time_zone = None
 user_format = None
@@ -40,6 +42,23 @@ def get_fullname(profile):
 			[p[0].get('first_name'), p[0].get('last_name')])) or profile
 	
 	return profile
+
+def auth():
+	a=webnotes.conn.sql("select value from `tabSingles` where doctype='LDAP Settings' and field='dms_server'",as_list=1)
+	if a:
+		client_object = pywebdav_client.Client(a[0][0])
+		client_object.set_connection(username='swapnil', password='swapnil')
+		return ["Done",client_object]
+	else:
+		return ["Error","Server is not defined"]
+
+def document_attach(source,target,auth_id,operation):
+	if operation=="upload":
+		webnotes.errprint(["erfg",source,target])
+		auth_id.upload_file(source,target)
+	else:
+		auth_id.download_file(source,dest_path=target)
+	
 
 def get_formatted_email(user):
 	"""get email id of user formatted as: John Doe <johndoe@example.com>"""
@@ -879,3 +898,5 @@ def compare(val1, condition, val2):
 		return operator_map[condition]((val1, val2))
 
 	return False
+
+		

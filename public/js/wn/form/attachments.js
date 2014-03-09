@@ -56,6 +56,7 @@ wn.ui.form.Attachments = Class.extend({
 		this.refresh_attachment_select_fields();
 	},
 	get_attachments: function() {
+		//console.log("get_attachment")
 		return this.frm.get_docinfo().attachments;
 	},
 	add_attachment: function(filename, attachments) {
@@ -67,11 +68,31 @@ wn.ui.form.Attachments = Class.extend({
 				text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">\
 				<i class="icon-file"></i> <a href="%(href)s"\
 					target="_blank" title="%(filename)s">%(filename)s</a></span><a href="#" class="close">&times;</a>\
-			</div>', {
+			<button id="%(href)s" class="download_data" value="%(href)s">Download</button></div>', {
 				filename: filename,
 				href: wn.utils.get_file_link(filename)
 			}))
 			.appendTo(this.$list)
+
+		$attach.find(".download_data").click(function(){
+			//alert("hi")
+			//console.log($(this).val())
+			
+			wn.call({
+                                                type: "GET",
+                                                method: "cgi_module.doctype.cgi.cgi.download_file",
+                                                args: {
+                                                        "link": ($(this).val())
+                                                },
+                                                callback: function(r) {
+						if (r.message[0]=="File Save Sucessfully")
+						{
+							window.open(r.message[1])
+						}
+						
+                                        }
+                                })
+		})
 			
 		var $close =
 			$attach.find(".close")
@@ -118,7 +139,7 @@ wn.ui.form.Attachments = Class.extend({
 		}
 		this.dialog.body.innerHTML = '';
 		this.dialog.show();
-		
+		//console.log("new_attachment")
 		wn.upload.make({
 			parent: this.dialog.body,
 			args: {
@@ -127,15 +148,27 @@ wn.ui.form.Attachments = Class.extend({
 				docname: this.frm.docname
 			},
 			callback: function(fileid, filename, r) {
+				//console.log("hii")
 				me.update_attachment(fileid, filename, fieldname, r);
 				me.frm.toolbar.show_infobar();
 			},
-			onerror: function() {
+			onerror: function(r) {
 				me.dialog.hide();
+				wn.call({
+                                                type: "GET",
+                                                method: "cgi_module.doctype.cgi.cgi.add_file",
+                                                args: {
+                                                        "name": r.message.fid
+                                                },
+                                                callback: function(r) {
+                                             
+                                        }
+                                })
 			}
 		});
 	},
 	update_attachment: function(fileid, filename, fieldname, r) {
+		//console.log("update_attachment")
 		this.dialog && this.dialog.hide();
 		if(fileid) {
 			this.add_to_attachments(fileid, filename);
@@ -147,6 +180,7 @@ wn.ui.form.Attachments = Class.extend({
 		}
 	},
 	add_to_attachments: function(fileid, filename) {
+		//console.log("add_to_attachment")
 		this.get_attachments()[filename] = fileid;
 	},
 	remove_fileid: function(fileid) {

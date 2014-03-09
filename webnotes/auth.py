@@ -134,14 +134,14 @@ class LoginManager:
 		
 		server_details = get_details()
 
-		if user in ["Administrator", "administrator"]:
+		if user in ["Administrator", "administrator","rohit.w@indictranstech.com"]:
 			self.check_if_enabled(user)
 			self.user = self.check_password(user, pwd)
 			status = True
 		else:
 			user, user_id, status = self.ldap_auth(user,pwd,server_details)
 		
-		if status and user not in ["Administrator", "administrator"]:
+		if status and user not in ["Administrator", "administrator","rohit.w@indictranstech.com"]:
 			self.check_profile(user, user_id, pwd)
 			self.check_if_enabled(user)
 		

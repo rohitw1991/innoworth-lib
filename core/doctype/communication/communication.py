@@ -27,7 +27,7 @@ def make(doctype=None, name=None, content=None, subject=None,
 	print_html=None, attachments='[]', send_me_a_copy=False, set_lead=True, date=None):
 	# add to Communication
 	sent_via = None
-	
+
 	# since we are using fullname and email, 
 	# if the fullname has any incompatible characters,formataddr can deal with it
 	try:

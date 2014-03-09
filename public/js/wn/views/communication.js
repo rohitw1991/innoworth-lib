@@ -148,7 +148,7 @@ wn.views.CommunicationComposer = Class.extend({
 		$(document).on("upload_complete", function(event, filename, fileurl) {
 			if(me.dialog.display) {
 				var wrapper = $(me.dialog.fields_dict.select_attachments.wrapper);
-
+				console.log(wrapper)
 				// find already checked items
 				var checked_items = wrapper.find('[data-file-name]:checked').map(function() {
 					return $(this).attr("data-file-name");
@@ -221,13 +221,14 @@ wn.views.CommunicationComposer = Class.extend({
 		$(fields.send.input).click(function() {
 			var btn = this;
 			var form_values = me.dialog.get_values();
+
 			if(!form_values) return;
 					
 			var selected_attachments = $.map($(me.dialog.wrapper)
 				.find("[data-file-name]:checked"), function(element) {
 					return $(element).attr("data-file-name");
 				})
-			
+			console.log([form_values.attach_document_print,form_values.select_print_format,selected_attachments])
 			if(form_values.attach_document_print) {
 				_p.build(form_values.select_print_format || "", function(print_format_html) {
 					me.send_email(btn, form_values, selected_attachments, print_format_html);
@@ -240,7 +241,6 @@ wn.views.CommunicationComposer = Class.extend({
 	
 	send_email: function(btn, form_values, selected_attachments, print_format_html) {
 		var me = this;
-		
 		if(form_values.attach_document_print) {
 			var print_html = print_format_html;
 			if(cint(wn.boot.send_print_in_body_and_attachment)) {

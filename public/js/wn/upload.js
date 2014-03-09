@@ -15,7 +15,7 @@ wn.upload = {
 				action: wn.request.url
 			})).appendTo(opts.parent);
 	
-
+		
 		// get the first file
 		$upload.find(".btn-upload").click(function() {
 			// convert functions to values

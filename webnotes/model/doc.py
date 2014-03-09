@@ -252,6 +252,7 @@ class Document:
 			self._set_name(autoname, istable)
 		
 		# validate name
+		webnotes.errprint(self.name)
 		self.name = validate_name(self.doctype, self.name, case)
 				
 		# insert!

@@ -18,6 +18,7 @@ wn.upload = {
 		
 		// get the first file
 		$upload.find(".btn-upload").click(function() {
+		
 			// convert functions to values
 			for(key in opts.args) {
 				if(typeof val==="function")
@@ -39,7 +40,6 @@ wn.upload = {
 			})
 			
 			opts.args.file_url = $upload.find('[name="file_url"]').val();
-
 			var fileobj = $upload.find(":file").get(0).files[0];
 			wn.upload.upload_file(fileobj, opts.args, opts.callback, opts.onerror);
 		})

@@ -26,7 +26,6 @@ html, body, div, span, td, p {   font-family: inherit;   font-size: inherit;  }
  <body><div class="page-settings">
 <div style="max-width: 100%">
 <div style="text-align:left">
-<img src="files/Innoworth%20logo.png" width="50%" height="100">
 </div>
 </div>
 <div class="form-layout-row">

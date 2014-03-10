@@ -54,8 +54,7 @@ def auth():
 
 def document_attach(source,target,auth_id,operation):
 	if operation=="upload":
-		webnotes.errprint(["erfg",source,target])
-		auth_id.upload_file(source,target)
+		f=auth_id.upload_file(source,target)
 	else:
 		auth_id.download_file(source,dest_path=target)
 	

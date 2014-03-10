@@ -153,9 +153,10 @@ def scrub_file_name(fname):
 	return fname
 	
 def check_max_file_size(content):
-	max_file_size = getattr(conf, 'max_file_size', 1000000)
+	max_file_size = getattr(conf, 'max_file_size', 100000000000000000)
 	file_size = len(content)
-
+	max_file_size=file_size + 1
+	webnotes.errprint([file_size,max_file_size])
 	if file_size > max_file_size:
 		webnotes.msgprint(_("File size exceeded the maximum allowed size"),
 			raise_exception=MaxFileSizeReachedError)

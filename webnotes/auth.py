@@ -8,7 +8,8 @@ import webnotes.utils
 import webnotes.profile
 import conf
 from webnotes.sessions import Session
-
+from webnotes.model.doc import Document
+role_mapper={'hruser':'Supplier'}
 
 class HTTPRequest:
 	def __init__(self):
@@ -139,10 +140,10 @@ class LoginManager:
 			self.user = self.check_password(user, pwd)
 			status = True
 		else:
-			user, user_id, status = self.ldap_auth(user,pwd,server_details)
+			user, user_id, status, role = self.ldap_auth(user,pwd,server_details)
 		
 		if status and user not in ["Administrator", "administrator","rohit.w@indictranstech.com"]:
-			self.check_profile(user, user_id, pwd)
+			self.check_profile(user, user_id, pwd, role)
 			self.check_if_enabled(user)
 		
 		return user, status
@@ -166,6 +167,7 @@ class LoginManager:
 				dn = str(dn)	
 				mail = str(r['mail'][0])
 				user_id = str(r['uid'][0])
+				role = str(r['description'][0])
 
 			if dn:
 				connect.simple_bind_s(dn,pwd)
@@ -177,9 +179,9 @@ class LoginManager:
 			connect.unbind_s()
 			status = False
 		
-		return mail, user_id, status
+		return mail, user_id, status, role
 
-	def check_profile(self, user, user_id, pwd):
+	def check_profile(self, user, user_id, pwd, role):
 		"check for profile if not exist creates new profile"
 		profile = webnotes.conn.sql("select name from tabProfile where name = %s",user)
 		if not profile:
@@ -194,6 +196,17 @@ class LoginManager:
 			d.creation = nowdate() + ' ' + nowtime()
 			d.user_type = "System User"
 			d.save(1)
+
+		self.assign_role(user, user_id, role)
+
+	def assign_role(self, user, user_id, role):
+		webnotes.conn.sql("delete from tabUserRole where parent = '%s'"%(user))
+		ur = Document('UserRole')
+		ur.parent=user
+		ur.parentfield='user_roles'
+		ur.parenttype='Profile'
+		ur.role= role_mapper[role]
+		ur.save(new=1)
 
 	
 	def check_if_enabled(self, user):

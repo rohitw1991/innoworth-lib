@@ -63,13 +63,17 @@ wn.ui.form.Attachments = Class.extend({
 		var fileid = attachments[filename];
 		
 		var me = this;
+		file_name=filename.toString().split('/')
+		file_name=file_name[(file_name.length)-1]
+
 		var $attach = $(repl('<div class="alert alert-info" style="margin-bottom: 7px">\
 			<span style="display: inline-block; width: 90%; \
 				text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">\
-				<i class="icon-file"></i> <a href="%(href)s"\
-					target="_blank" title="%(filename)s">%(filename)s</a></span><a href="#" class="close">&times;</a>\
+				<i class="icon-file"></i> <a \
+					target="_blank" title="%(file_name)s">%(file_name)s</a></span><a href="#" class="close">&times;</a>\
 			<button id="%(href)s" class="download_data" value="%(href)s">Download</button></div>', {
 				filename: filename,
+				file_name:file_name,
 				href: wn.utils.get_file_link(filename)
 			}))
 			.appendTo(this.$list)

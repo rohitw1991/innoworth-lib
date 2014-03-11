@@ -257,6 +257,8 @@ class Document:
 				
 		# insert!
 		if not keep_timestamps:
+			if not webnotes.session:
+				self.owner = 'Administrator'
 			if not self.owner: 
 				self.owner = webnotes.session['user']
 			#self.modified_by = webnotes.session['user']

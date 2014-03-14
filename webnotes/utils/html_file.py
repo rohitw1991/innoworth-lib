@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import webnotes
 import webnotes.db
+from webnotes.utils import cstr
 import webnotes.utils
 import webnotes.profile
 
@@ -10,8 +11,9 @@ class create_html:
 		pass
 
 def html_data(data):
+	webnotes.errprint(data['rounded_total'])	
 	return ("""
-				<!DOCTYPE html><html> <head>  <meta charset="utf-8" />  <title>"""+(data['doctype_no'])+"""</title>
+				<!DOCTYPE html><html> <head>  <meta charset="utf-8" />  <title>"""+cstr(data['doctype_no'])+"""</title>
 <style>
 html, body, div, span, td, p {   font-family: inherit;   font-size: inherit;  } 
 .page-settings {  font-family: Arial, Helvetica Neue, Sans;  font-size: 9pt; } pre { margin:0; padding:0;}
@@ -33,8 +35,8 @@ html, body, div, span, td, p {   font-family: inherit;   font-size: inherit;  }
 </div>
 <div>
 <div style="padding: 0px;">
-<h1 style="font-size: 22px; margin-bottom: 8px;">"""+(data['doctype'])+"""</h1>
-<div style="font-size: 16px; color: rgb(136, 136, 136); margin-bottom: 8px; padding-bottom: 8px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(0, 0, 0);">"""+(data['doctype_no'])+"""</div>
+<h1 style="font-size: 22px; margin-bottom: 8px;">"""+cstr(data['doctype'])+"""</h1>
+<div style="font-size: 16px; color: rgb(136, 136, 136); margin-bottom: 8px; padding-bottom: 8px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(0, 0, 0);">"""+cstr(data['doctype_no'])+"""</div>
 </div>
 <div><table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
 <tbody>
@@ -50,12 +52,12 @@ html, body, div, span, td, p {   font-family: inherit;   font-size: inherit;  }
 <div><div style="padding: 0px;"></div><div>
 <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
 <tbody><tr><td style="vertical-align: top; width: 50%;"><div style="padding: 0px;"></div><div style="padding: 0px;">
-<table style="width: 100%;"><tbody><tr><td class="datalabelcell" style="width: 38%;">Name</td><td class="datainputcell">"""+(data['customer_name'])+"""</td></tr></tbody></table>
-<table style="width: 100%;"><tbody><tr><td class="datalabelcell" style="width: 38%;">"""+(data['addr_name'])+"""</td><td class="datainputcell">"""+(data['address'])+"""</td></tr></tbody></table>
-<table style="width: 100%;"><tbody><tr><td class="datalabelcell" style="width: 38%;">Company</td><td class="datainputcell">"""+(data['company'])+"""</td></tr></tbody></table>
-</div></td><td style="vertical-align: top; width: 50%;"><div style="padding: 0px;"></div><div style="padding: 0px;"><table style="width: 100%;"><tbody><tr><td class="datalabelcell" style="width: 38%;">"""+(data['date_1'])+"""</td>
-<td class="datainputcell">"""+(data['posting_date'])+"""</td></tr></tbody></table><table style="width: 100%;"><tbody><tr>
-<td class="datalabelcell" style="width: 38%;">"""+(data['date_2'])+"""</td><td class="datainputcell">"""+(data['due_date'])+"""</td></tr></tbody></table></div></td></tr></tbody></table></div></div></div>
+<table style="width: 100%;"><tbody><tr><td class="datalabelcell" style="width: 38%;">Name</td><td class="datainputcell">"""+cstr(data['customer_name'])+"""</td></tr></tbody></table>
+<table style="width: 100%;"><tbody><tr><td class="datalabelcell" style="width: 38%;">"""+cstr(data['addr_name'])+"""</td><td class="datainputcell">"""+cstr(data['address'])+"""</td></tr></tbody></table>
+<table style="width: 100%;"><tbody><tr><td class="datalabelcell" style="width: 38%;">Company</td><td class="datainputcell">"""+cstr(data['company'])+"""</td></tr></tbody></table>
+</div></td><td style="vertical-align: top; width: 50%;"><div style="padding: 0px;"></div><div style="padding: 0px;"><table style="width: 100%;"><tbody><tr><td class="datalabelcell" style="width: 38%;">"""+cstr(data['date_1'])+"""</td>
+<td class="datainputcell">"""+cstr(data['posting_date'])+"""</td></tr></tbody></table><table style="width: 100%;"><tbody><tr>
+<td class="datalabelcell" style="width: 38%;">"""+cstr(data['date_2'])+"""</td><td class="datainputcell">"""+cstr(data['due_date'])+"""</td></tr></tbody></table></div></td></tr></tbody></table></div></div></div>
 <div class="form-layout-row"><div></div><div><div style="padding: 0px;"></div><div><table style="width: 100%; border-collapse: collapse; table-layout: fixed;"><tbody><tr><td style="vertical-align: top; width: 50%;"><div style="padding: 0px;"></div><div style="padding: 0px;"></div></td><td style="vertical-align: top; width: 50%;"><div style="padding: 0px;"></div><div style="padding: 0px;"></div></td></tr></tbody></table></div></div></div>
 <div class="form-layout-row"><div></div><div>
 <div style="padding: 0px;"></div><div>
@@ -78,7 +80,7 @@ html, body, div, span, td, p {   font-family: inherit;   font-size: inherit;  }
 <td style="border: 1px solid rgb(153, 153, 153); padding: 3px; vertical-align: top; background-color: rgb(221, 221, 221); font-weight: bold; word-wrap: break-word; width: 13%; text-align: right;">Basic Rate</td>
 <td style="border: 1px solid rgb(153, 153, 153); padding: 3px; vertical-align: top; background-color: rgb(221, 221, 221); font-weight: bold; word-wrap: break-word; width: 13%; text-align: right;">Amount</td>
 </tr>
-"""+(data['table_data'])+"""
+"""+cstr(data['table_data'])+"""
 </tbody>
 </table>
 </div>
@@ -101,11 +103,11 @@ html, body, div, span, td, p {   font-family: inherit;   font-size: inherit;  }
 <td>
 <table class="noborder" style="width:100%"><tbody><tr><td style="width:50%;">
 <b>Net Total</b></td>
-<td style="width:50%;text-align:right;">₹ """+(data['net_total'])+"""</td></tr>
-"""+(data['tax_detail'])+"""
+<td style="width:50%;text-align:right;">₹ """+cstr(data['net_total'])+"""</td></tr>
+"""+cstr(data['tax_detail'])+"""
 <tr><td style="width:50%;">
-<b>Grand Total</b></td><td style="width:50%;text-align:right;">₹ """+(data['grand_total'])+"""</td></tr><tr><td style="width:50%;">
-<b>Rounded Total</b></td><td style="width:50%;text-align:right;">₹ """+(data['rounded_total'])+"""</td>
+<b>Grand Total</b></td><td style="width:50%;text-align:right;">₹ """+cstr(data['grand_total'])+"""</td></tr><tr><td style="width:50%;">
+<b>Rounded Total</b></td><td style="width:50%;text-align:right;">₹ """+cstr(data['rounded_total'])+""" </td>
 </tr></tbody></table></td></tr><tr>
 <td colspan="2">
 </td>
@@ -115,4 +117,4 @@ html, body, div, span, td, p {   font-family: inherit;   font-size: inherit;  }
 <div class="form-layout-row"><div></div><div><div style="padding: 0px;"></div><div><table style="width: 100%; border-collapse: collapse; table-layout: fixed;"><tbody><tr><td style="vertical-align: top; width: 100%;"><div style="padding: 0px;"></div><div style="padding: 0px;"><div></div></div></td></tr></tbody></table></div></div></div>
 <div class="form-layout-row"><div></div><div><div style="padding: 0px;"></div><div><table style="width: 100%; border-collapse: collapse; table-layout: fixed;"><tbody><tr><td style="vertical-align: top; width: 50%;"><div style="padding: 0px;"></div><div style="padding: 0px;"></div></td><td style="vertical-align: top; width: 50%;"><div style="padding: 0px;"></div><div style="padding: 0px;"></div></td></tr></tbody></table></div></div></div></div> </body></html> 
 """)
-
+	
